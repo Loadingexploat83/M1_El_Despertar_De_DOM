@@ -1,0 +1,47 @@
+
+header{
+
+    display: flex;
+    justify-content: space-around;
+    border: .25em solid white;
+    border-color: black;
+    border-radius: 2em;
+    text-align: center;
+    font-size: 1.5em;
+    padding: .5em;
+    margin: 0% 43% 2%;
+    background-color: lightgray;
+}
+
+#Buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+}
+button{
+    
+    border: .25em solid white;
+    border-color: black;
+    border-radius: 3em;
+    text-align: center;
+    font-size: 2em;
+    padding: 1em;
+    margin: 2% 40%;
+    background-color: lightgray;
+
+
+}
+
+body{
+    text-align: center;
+    background-color: gray;
+    background-image: url("SpaceCats.jpg");
+    background-size: cover;
+}
+
+#slider{
+    width: 20%;
+    margin: 0% 40% 2%;
+    height: 2em;
+}
