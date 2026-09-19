@@ -9,16 +9,23 @@
     <link rel="icon" href="YourBrainTricksYouIntoThinking.png">
 
 </head>
+
+<header> Build-a-Cat </header>
 <body>
+    <main>
+        <div class = "slideContainer">  
+            <input type="range" min = "2" max = "5" value = "2" id = "range" class = "slider"> 
 
-    <header> Build-a-Cat </header>
+        </div>
 
-    <input type="range" min = "2" max = "5" value = "2" id = "slider"> 
+        <div id = "Buttons"> 
+            <button id="startButton" onclick="startGame()">Start Game</button>
+        </div>  
+    </main>
 
-    <div id = "Buttons"> 
-        <button id="startButton" onclick="startGame()">Start Game</button>
-        <button id="startButton" onclick="Exit()"> Exit</button>
-    </div>  
+    <aside>
+        <div id = "enjoy">   Enjoy </div>
+    </aside>
 
 </body>
 </html>
