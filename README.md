@@ -4,9 +4,11 @@ Autopsia:
 
 Bibliografia:
 
-Linear Gradient
+Linear Gradient (Multiples colores)
 https://developer.mozilla.org/es/docs/Web/CSS/Reference/Values/gradient/linear-gradient
 
+Cambiar el "thumb" de un slider
+https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-slider-thumb
 
-JavaScript + CSS Range Slider | Costum Value Range Slider Webdesign Tutorial
-https://www.youtube.com/watch?v=BrpiNUf2XCk
+span:
+https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/span

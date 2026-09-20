@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type ="text/javascript" src = "PuzzleGame.js">    </script>
+    <script type ="text/javascript" src = "PuzzleGame.js" defer>    </script>
     <link rel="stylesheet" href="PuzzleGame.css" type="text/css">
+    <link rel="icon" href="img/YourBrainTricksYouIntoThinking.png">
+
     <title> Build A Cat </title>
-    <link rel="icon" href="YourBrainTricksYouIntoThinking.png">
 
 </head>
 
 <header> Build-a-Cat </header>
 <body>
     <main>
-        <div class = "slideContainer">  
-            <input type="range" min = "2" max = "5" value = "2" id = "range" class = "slider"> 
 
+        <img id = "cat_Dificulty" src="img/YourBrainTricksYouIntoThinking.png" alt="Cat Image">
+        <div class = "slideContainer">  
+            <input type="range" min = "2" max = "5" value = "2" id = "myRange" class = "slider"> 
+            <p> Board size: <span id="value">  </span></p> <!-- Span: un div pero inline, en vez de block-level element-->
         </div>
 
         <div id = "Buttons"> 
@@ -24,7 +27,8 @@
     </main>
 
     <aside>
-        <div id = "enjoy">   Enjoy </div>
+        <img class = "sideCats" id = "leftSide" src="img/leftCat.jpeg" alt="Left Cat">
+        <img class = "sideCats" id = "rightSide" src="rightCat.png" alt="Right Cat">
     </aside>
 
 </body>
