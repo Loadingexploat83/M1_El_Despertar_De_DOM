@@ -15,20 +15,27 @@
 <body>
     <main>
 
-        <img id = "cat_Dificulty" src="img/YourBrainTricksYouIntoThinking.png" alt="Cat Image">
-        <div class = "slideContainer">  
-            <input type="range" min = "2" max = "5" value = "2" id = "myRange" class = "slider"> 
-            <p> Board size: <span id="value">  </span></p> <!-- Span: un div pero inline, en vez de block-level element-->
-        </div>
+        <menu id = "menu">
+            <img id = "catDifficulty" src="img/Difficulty/cat_2.png" alt="Cat_Difficulty">
+            <div class = "slideContainer">  
+                <input type="range" min = "2" max = "5" value = "2" id = "myRange" class = "slider"> 
+                <p> Board size: <span id="value">  </span></p> <!-- Span: un div pero inline, en vez de block-level element-->
+            </div>
 
-        <div id = "Buttons"> 
-            <button id="startButton" onclick="startGame()">Start Game</button>
-        </div>  
+            <div id = "Buttons"> 
+                <button id="startButton" onclick="startGame()">Start Game</button>
+            </div>  
+        </menu>
+
+        <div id = "GameMode">
+            <div id = "board">
+            </div>
+        </div>
     </main>
 
     <aside>
         <img class = "sideCats" id = "leftSide" src="img/leftCat.jpeg" alt="Left Cat">
-        <img class = "sideCats" id = "rightSide" src="rightCat.png" alt="Right Cat">
+        <img class = "sideCats" id = "rightSide" src="img/rightCat.png" alt="Right Cat">
     </aside>
 
 </body>

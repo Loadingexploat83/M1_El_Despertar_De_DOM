@@ -13,12 +13,16 @@ header{
     background-color: lightgray;
 }
 
-#Buttons{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
 
+
+body{
+    text-align: center;
+    background-color: gray;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
+
+
 button{
     
     border: .25em solid white;
@@ -30,20 +34,31 @@ button{
     margin: 2% 40%;
     background-color: lightgray;
 
+}
+
+#Buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 
 }
 
-body{
-    text-align: center;
-    background-color: gray;
-    background-repeat: no-repeat;
-    background-size: cover;
+#catDifficulty{
+    border: .25em solid white;
+    border-color: black;
+    border-radius: 2em;
+    margin: 0% 35% 2%;
+    background-color: lightgray;
+
+    width: 20%;
+    height: 20%;   
+    aspect-ratio: 1/1;
 }
 
 
 .slideContainer{
     width: 20%;
-    margin: 20% 40% 2%;
+    margin: 0% 40% 3%;
     height: 2em;
 }
 
@@ -72,30 +87,37 @@ body{
 
 }
 
-.slider::after{
-    content: '5';
-    font-size: 1.5em;
-    position: absolute;
-    left: 60%;
-    top: 56%;
-    color: white;
-
-}
-.slider::before{
-    content: '2';
-    font-size: 1.5em;
-    position: absolute;
-    left: 39.5%;
-    top: 56%;
-    color: white;
-
-}
-
 
 p {
 
     font-size: 1.5em;
     text-align: center;
+}
+
+#GameMode{
+    display: none;
+    justify-content: space-around;
+}
+
+#board{
+    display: grid;
+    width: 15%;
+    min-width: 25%;
+    grid-template-rows: repeat(var(--difficulty), 1fr);
+}
+
+.row{
+    display: grid;
+    grid-template-columns: repeat(var(--difficulty), 1fr);
+}
+
+.cell{
+    display: flex;
+    max-width: fit-content;
+    
+    aspect-ratio: 1/1;
+    border: 1px solid black;
+    border-color: black;
 }
 
 /*

@@ -1,6 +1,8 @@
 
-var slider = document.getElementById("myRange");
-var output = document.getElementById("value");
+const slider = document.getElementById("myRange");
+const output = document.getElementById("value");
+const catDificulty = document.getElementById("catDifficulty");
+const board = document.getElementById("board");
 
 output.innerHTML = `${slider.value} x ${slider.value}`;
 
@@ -18,5 +20,28 @@ function changeSliderColor() {
 }
 
 function catDifficulty() {
+    catDificulty.src = `img/difficulty/cat_${slider.value}.png`;
+
+}
+
+function startGame() {
+    let difficulty = slider.value;
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("GameMode").style.display = "flex";
+    generatePuzzle(difficulty);
+}
+
+function generatePuzzle(difficulty) {
+
+    let blocks = "";
+    for(let i = 0; i < difficulty; i++){
+        blocks += `<div class = "row"> `;
+        for(let j = 0; j < difficulty; j++){
+            blocks += `<img class = "cell" src = "img/${difficulty}x${difficulty}/Onyx_2/${i}_${j}.jpg"> </img>`
+        }
+        blocks += `</div> `;
+    }
+    board.innerHTML = blocks;
+    board.style.setProperty("--difficulty", difficulty);
 
 }
