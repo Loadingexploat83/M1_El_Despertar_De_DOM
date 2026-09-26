@@ -5,7 +5,7 @@ const context = board.getContext("2d");
 
 
 const slider = document.querySelector("#myRange");
-const output = document.querySelector("#value");
+const outputTxt = document.querySelector("#value");
 const catDificulty = document.querySelector("#catDifficulty");
 const startButton = document.querySelector("#startButton");
 
@@ -32,18 +32,18 @@ const emptyTile = {
 };
 
 
-let boardParts = new Object;
+let digitalBoard = new Object;
 
 const img = new Image();
-img.src = `img/cats/Onyx_1.jpg`;
+img.src = getRandomImg();
 
 // Espera a que se cargue la imagen antes de continuar con el codigo
 // Si el codigo intenta dibujar los tiles sin que cargue la imagen daria problemas
 img.addEventListener("load", drawTiles);
 
-output.textContent = `${slider.value} x ${slider.value}`;
+outputTxt.textContent = `${slider.value} x ${slider.value}`;
 slider.oninput = function() {
-    output.textContent = `${this.value} x ${this.value}`;
+    outputTxt.textContent = `${this.value} x ${this.value}`;
     changeSliderColor();
     catDifficulty();
 
@@ -68,7 +68,7 @@ board.addEventListener('click', function(){
     if(solved){
         // Hacemos esperar un poco antes de poner el print de victoria
         // ya que sino quizas lo hace antes de que se actualice visualmente el tablero
-        setTimeout(function () {alert("Yippie");}, 500);
+        setTimeout(function () {alert("Yippie");}, 250);
     }
 });
 
@@ -107,18 +107,18 @@ function getRandomImg(){
 
 function createBoard(){
 
-    boardParts = new Array(tileCount);
+    digitalBoard = new Array(tileCount);
     for(let i = 0; i < tileCount; ++i){
-        boardParts[i] = new Array(tileCount);
+        digitalBoard[i] = new Array(tileCount);
         for(let j = 0; j < tileCount; ++j){
-            boardParts[i][j] = new Object;
-            boardParts[i][j].x = (tileCount - 1) - i;
-            boardParts[i][j].y = (tileCount - 1) - j;
+            digitalBoard[i][j] = new Object;
+            digitalBoard[i][j].x = (tileCount - 1) - i;
+            digitalBoard[i][j].y = (tileCount - 1) - j;
         }
     }
 
-    emptyTile.x = boardParts[tileCount - 1][tileCount - 1].x;
-    emptyTile.y = boardParts[tileCount - 1][tileCount - 1].y;
+    emptyTile.x = digitalBoard[tileCount - 1][tileCount - 1].x;
+    emptyTile.y = digitalBoard[tileCount - 1][tileCount - 1].y;
     solved = false;
 }
 
@@ -130,10 +130,10 @@ function canMove (x1, y1, x2, y2){
 
 function moveTile(destination, origin){
     if(!solved) {
-        boardParts[destination.x][destination.y].x = boardParts [origin.x][origin.y].x;
-        boardParts[destination.x][destination.y].y = boardParts [origin.x][origin.y].y;
-        boardParts[origin.x][origin.y].x = tileCount -1;
-        boardParts[origin.x][origin.y].y = tileCount -1;
+        digitalBoard[destination.x][destination.y].x = digitalBoard [origin.x][origin.y].x;
+        digitalBoard[destination.x][destination.y].y = digitalBoard [origin.x][origin.y].y;
+        digitalBoard[origin.x][origin.y].x = tileCount -1;
+        digitalBoard[origin.x][origin.y].y = tileCount -1;
         destination.x = origin.x;
         destination.y = origin.y;
         checkSolved();
@@ -144,7 +144,7 @@ function checkSolved(){
     let correct = true;
     for(let i = 0; i < tileCount; i++)
         for(let j = 0; j < tileCount; j++)
-            if(boardParts[i][j].x != i || boardParts [i][j].y != j)
+            if(digitalBoard[i][j].x != i || digitalBoard [i][j].y != j)
                 correct = false;
         
     solved = correct;
@@ -156,8 +156,8 @@ function drawTiles(){
 
     for(let i = 0; i < tileCount; i++){
         for(let j = 0; j < tileCount; j++){
-            let x = boardParts[i][j].x;
-            let y = boardParts[i][j].y;
+            let x = digitalBoard[i][j].x;
+            let y = digitalBoard[i][j].y;
             if(i != emptyTile.x || j != emptyTile.y || solved === true){
                 context.drawImage(img, x*tileSize, y*tileSize, tileSize, tileSize, i * tileSize, j*tileSize, tileSize, tileSize);
             }
