@@ -1,38 +1,43 @@
 
 header{
 
+    border: .25em solid white;
+    border-color: #8C8273;
+    border-radius: 3em;
+    color: white;
+    background-color: #313537;
+
     display: flex;
     justify-content: space-around;
-    border: .25em solid white;
-    border-color: black;
-    border-radius: 2em;
     text-align: center;
     font-size: 1.5em;
     padding: .5em;
     margin: 0% 43% 2%;
-    background-color: lightgray;
 }
 
 
 
 body{
     text-align: center;
-    background-color: gray;
+    background-color: #4D5356;
     background-repeat: no-repeat;
-    background-size: cover;
+    border-color: #8C8273;
+    color: #d8d4cf;
 }
 
 
 button{
     
     border: .25em solid white;
-    border-color: black;
+    border-color: #8C8273;
     border-radius: 3em;
+    color: white;
+    background-color: #313537;
+
     text-align: center;
     font-size: 2em;
     padding: 1em;
     margin: 2% 40%;
-    background-color: lightgray;
 
 }
 
@@ -45,10 +50,11 @@ button{
 
 #catDifficulty{
     border: .25em solid white;
-    border-color: black;
-    border-radius: 2em;
+    border-color: #8C8273;
+    border-radius: 3em;
+    color: white;
+    background-color: #313537;
     margin: 0% 35% 2%;
-    background-color: lightgray;
 
     width: 20%;
     height: 20%;   
@@ -99,12 +105,19 @@ p {
     justify-content: space-around;
 }
 
+#gameboard{
+    width: 30%;
+    height: 30%;
+}
+
+/*
 #board{
     display: grid;
     width: 15%;
     min-width: 25%;
     grid-template-rows: repeat(var(--difficulty), 1fr);
 }
+
 
 .row{
     display: grid;
@@ -120,7 +133,7 @@ p {
     border-color: black;
 }
 
-/*
+
 .sideCats{
     position: absolute;
     font-size: 1.5em;
