@@ -1,16 +1,25 @@
 
-const slider = document.getElementById("myRange");
-const output = document.getElementById("value");
-const catDificulty = document.getElementById("catDifficulty");
-const board = document.getElementById("board");
+const slider = document.querySelector("#myRange");
+const output = document.querySelector("#value");
+const catDificulty = document.querySelector("#catDifficulty");
+const board = document.querySelector("#board");
+const startButton = document.querySelector("#startButton");
 
-output.innerHTML = `${slider.value} x ${slider.value}`;
+const solved = false;
+const clickLoc = new Object;
+clickLoc.x = 0;
+clickLoc.y = 0;
+
+output.textContent = `${slider.value} x ${slider.value}`;
 
 slider.oninput = function() {
-    output.innerHTML = `${this.value} x ${this.value}`;
+    output.textContent = `${this.value} x ${this.value}`;
     changeSliderColor();
     catDifficulty();
 }
+
+startButton.addEventListener('click', startGame);
+//startButton.onclick = startGame();
 
 
 function changeSliderColor() {
@@ -31,6 +40,7 @@ function startGame() {
     generatePuzzle(difficulty);
 }
 
+/*
 function generatePuzzle(difficulty) {
 
     let blocks = "";
@@ -44,4 +54,21 @@ function generatePuzzle(difficulty) {
     board.innerHTML = blocks;
     board.style.setProperty("--difficulty", difficulty);
 
+}
+*/
+
+function setBoard(){
+
+    boardParts = new Array(difficulty);
+    for(let i = 0; i < difficulty; i++){
+        boardParts[i] = new Array(difficulty);
+        for(let j = 0; j < difficulty; j++){
+            boardParts[i][j] = new Object;
+            boardParts[i][j].x = (difficulty - 1) - i;
+            boardParts[i][j].x = (difficulty - 1) - j;
+        }
+    }
+
+    emptyLoc.x = boardParts[difficulty - 1][difficulty - 1].x;
+    emptyLoc.y = boardParts[difficulty - 1][difficulty - 1].y;
 }
