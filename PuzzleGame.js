@@ -42,23 +42,24 @@ img.src = getRandomImg();
 img.addEventListener("load", drawTiles);
 
 outputTxt.textContent = `${slider.value} x ${slider.value}`;
-slider.oninput = function() {
+slider.addEventListener( "input", function() {
     outputTxt.textContent = `${this.value} x ${this.value}`;
     changeSliderColor();
-    catDifficulty();
+    setCatDifficultyImg();
 
     //cuando cambiamos la barra de dificultad hay que calcular todo el tablero otra vez
     tileCount = this.value;
     tileSize = boardSize / tileCount;
     createBoard();
     drawTiles();
-}
+});
 
-board.onmousemove = function name(e) {
+board.addEventListener("mousemove", function(e){
+
     clickLoc.x = Math.floor((e.pageX - this.offsetLeft) / tileSize);
     clickLoc.y = Math.floor((e.pageY - this.offsetTop) / tileSize);
+});
 
-}
 
 board.addEventListener('click', function(){
     if(canMove(clickLoc.x, clickLoc.y, emptyTile.x, emptyTile.y)){
@@ -80,7 +81,7 @@ function changeSliderColor() {
     slider.style.background = color;
 }
 
-function catDifficulty() {
+function setCatDifficultyImg() {
     catDificulty.src = `img/difficulty/cat_${slider.value}.png`;
 
 }
