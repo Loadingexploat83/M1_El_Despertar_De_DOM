@@ -8,6 +8,12 @@ const slider = document.querySelector("#myRange");
 const outputTxt = document.querySelector("#value");
 const catDificulty = document.querySelector("#catDifficulty");
 const startButton = document.querySelector("#startButton");
+const catList = { 
+    Onyx: "img/cats/Onyx",
+    Kira: "img/cats/Kira",
+    Patchi: "img/cats/Patchi",
+    Mauricio: "img/cats/Mauricio"
+}
 
 startButton.addEventListener('click', startGame);
 
@@ -32,7 +38,7 @@ const emptyTile = {
 };
 
 
-let digitalBoard = new Object;
+let digitalBoard = {};
 
 const img = new Image();
 img.src = getRandomImg();
@@ -44,15 +50,19 @@ img.addEventListener("load", drawTiles);
 outputTxt.textContent = `${slider.value} x ${slider.value}`;
 slider.addEventListener( "input", function() {
     outputTxt.textContent = `${this.value} x ${this.value}`;
+
+    
+    //cuando cambiamos la barra de dificultad hay que calcular todo el tablero otra vez
+    tileCount = Number(this.value);
+    tileSize = boardSize / tileCount;
+
     changeSliderColor();
     setCatDifficultyImg();
 
-    //cuando cambiamos la barra de dificultad hay que calcular todo el tablero otra vez
-    tileCount = this.value;
-    tileSize = boardSize / tileCount;
     createBoard();
     drawTiles();
 });
+
 
 board.addEventListener("mousemove", function(e){
 
@@ -73,6 +83,29 @@ board.addEventListener('click', function(){
     }
 });
 
+function handleBoardClick(event){
+    // donde clickeas en el tablero
+    const rect =  board.getBoundingClientRect();
+
+    // event.clientX es donde clickeas segun el navegador
+    // Rect.left es donde empieza el tablero
+    const x = Math.floor((event.clientX - rect.left) / tileSize);
+    const y = Math.floor((event.clientY - rect.top) / tileSize);
+
+    if(canMove(x, y, emptyTile.x, emptyTile.y)){
+        moveTile(emptyTile, {x, y});
+        drawTiles();
+    }   
+
+    if(solved){
+        // Hacemos esperar un poco antes de poner el print de victoria
+        // ya que sino quizas lo hace antes de que se actualice visualmente el tablero
+        setTimeout(function () {alert("Yippie");}, 250);
+    }
+}
+
+board.addEventListener('click', handleBoardClick);
+
 
 // funciones del menu:
 function changeSliderColor() {
@@ -87,8 +120,8 @@ function setCatDifficultyImg() {
 }
 
 function startGame() {
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("GameMode").style.display = "flex";
+    document.querySelector("menu").style.display = "none";
+    document.querySelector("#GameMode").style.display = "flex";
 
     boardSize = board.clientWidth;
     board.width = boardSize;
@@ -112,9 +145,10 @@ function createBoard(){
     for(let i = 0; i < tileCount; ++i){
         digitalBoard[i] = new Array(tileCount);
         for(let j = 0; j < tileCount; ++j){
-            digitalBoard[i][j] = new Object;
-            digitalBoard[i][j].x = (tileCount - 1) - i;
-            digitalBoard[i][j].y = (tileCount - 1) - j;
+            digitalBoard[i][j] = {
+                x: tileCount - 1 - i,
+                y: tileCount - 1 - j
+            };
         }
     }
 
@@ -122,6 +156,28 @@ function createBoard(){
     emptyTile.y = digitalBoard[tileCount - 1][tileCount - 1].y;
     solved = false;
 }
+
+function createDivBoard(){
+    board.textContent = "";
+    for(let i = 0; i < tileCount; i++){
+        for(let j = 0; j < tileCount; j++){
+            const tile = document.createElement("div");
+            tile.classList.add("div");
+
+            // hace un width y height en % al total de "tiles"
+            tile.style.width = `${100 / tileCount}%`;
+            tile.style.height = `${100 / tilecount}%`;
+
+            //dataset: permite guardar datos personalizados en elementos
+            tile.dataset.x = i;
+            tile.dataset.y = j;
+
+            board.appendChild(tile)
+        }
+    }
+}
+
+
 
 // calcula la distancia entre X e Y
 // Si la distancia es 1, devuelve "True", sino devuelve "False"
