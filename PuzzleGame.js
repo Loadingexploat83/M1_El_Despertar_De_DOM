@@ -1,7 +1,5 @@
 
 const board = document.querySelector("#gameboard");
-//Consigue el contexto en el que esta el "gameboard" para poder dibujar
-const context = board.getContext("2d");
 
 
 const slider = document.querySelector("#myRange");
@@ -24,13 +22,6 @@ let tileSize = 0;
 let tileCount = Number(slider.value);
 let solved = false;
 
-
-// Donde clickea el usuario
-const clickLoc = {
-    x: 0,
-    y: 0
-};
-
 //Donde esta la tile vacia
 const emptyTile = {
     x: 0,
@@ -41,7 +32,6 @@ const emptyTile = {
 let digitalBoard = {};
 
 const img = new Image();
-img.src = getRandomImg();
 
 // Espera a que se cargue la imagen antes de continuar con el codigo
 // Si el codigo intenta dibujar los tiles sin que cargue la imagen daria problemas
@@ -60,28 +50,11 @@ slider.addEventListener( "input", function() {
     setCatDifficultyImg();
 
     createBoard();
+    createDivBoard();
     drawTiles();
 });
 
 
-board.addEventListener("mousemove", function(e){
-
-    clickLoc.x = Math.floor((e.pageX - this.offsetLeft) / tileSize);
-    clickLoc.y = Math.floor((e.pageY - this.offsetTop) / tileSize);
-});
-
-
-board.addEventListener('click', function(){
-    if(canMove(clickLoc.x, clickLoc.y, emptyTile.x, emptyTile.y)){
-        moveTile(emptyTile, clickLoc);
-        drawTiles();
-    }
-    if(solved){
-        // Hacemos esperar un poco antes de poner el print de victoria
-        // ya que sino quizas lo hace antes de que se actualice visualmente el tablero
-        setTimeout(function () {alert("Yippie");}, 250);
-    }
-});
 
 function handleBoardClick(event){
     // donde clickeas en el tablero
@@ -123,21 +96,32 @@ function startGame() {
     document.querySelector("menu").style.display = "none";
     document.querySelector("#GameMode").style.display = "flex";
 
+    img.src = getRandomImg();
     boardSize = board.clientWidth;
-    board.width = boardSize;
-    board.height = boardSize;
     tileSize = boardSize / tileCount;
 
     createBoard();
+    createDivBoard();
     drawTiles();
+    
 }
 
 
 
 // Funciones del juego:
 function getRandomImg(){
-    return `img/cats/Onyx_1.jpg`;
+    const cats = [
+        "img/cats/Onyx_1.jpg",
+        "img/cats/Kira_1.jpg",
+        "img/cats/Patchi_1.jpg",
+        "img/cats/Mauricio_1.jpg"
+    ];
+
+    const randomIndex = Math.floor(Math.random() * cats.length);
+    return cats[randomIndex];
 }
+
+
 
 function createBoard(){
 
@@ -157,16 +141,17 @@ function createBoard(){
     solved = false;
 }
 
+
 function createDivBoard(){
     board.textContent = "";
     for(let i = 0; i < tileCount; i++){
         for(let j = 0; j < tileCount; j++){
             const tile = document.createElement("div");
-            tile.classList.add("div");
+            tile.classList.add("tile");
 
             // hace un width y height en % al total de "tiles"
             tile.style.width = `${100 / tileCount}%`;
-            tile.style.height = `${100 / tilecount}%`;
+            tile.style.height = `${100 / tileCount}%`;
 
             //dataset: permite guardar datos personalizados en elementos
             tile.dataset.x = i;
@@ -208,18 +193,5 @@ function checkSolved(){
 }
 
 function drawTiles(){
-    // vaciamos el canvas
-    context.clearRect(0,0, boardSize, boardSize);
-
-    for(let i = 0; i < tileCount; i++){
-        for(let j = 0; j < tileCount; j++){
-            let x = digitalBoard[i][j].x;
-            let y = digitalBoard[i][j].y;
-            if(i != emptyTile.x || j != emptyTile.y || solved === true){
-                context.drawImage(img, x*tileSize, y*tileSize, tileSize, tileSize, i * tileSize, j*tileSize, tileSize, tileSize);
-            }
-        }
-
-    }
 
 }
