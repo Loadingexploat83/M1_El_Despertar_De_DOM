@@ -204,7 +204,15 @@ function shuffleBoard(){
 
         const randomIndex = Math.floor(Math.random() * posibleMoves.length);
         const randomMove = posibleMoves[randomIndex];
-        moveTile(emptyTile, randomMove);
+
+        // no podemos llamar a moveTile, porque si checkSolves se llama, el tablero se queda resuelto
+        digitalBoard[emptyTile.x][emptyTile.y] = digitalBoard[randomMove.x][randomMove.y];
+        digitalBoard[randomMove.x][randomMove.y] = {
+            x: tileCount - 1,
+            y: tileCount - 1
+        };
+        emptyTile.x = randomMove.x;
+        emptyTile.y = randomMove.y;
     }
     solved = false;
 
