@@ -50,6 +50,8 @@ slider.addEventListener( "input", function() {
     setCatDifficultyImg();
 
     createBoard();
+    shuffleBoard();
+
     createDivBoard();
     drawTiles();
 });
@@ -101,6 +103,7 @@ function startGame() {
     tileSize = boardSize / tileCount;
 
     createBoard();
+    shuffleBoard();
     createDivBoard();
     drawTiles();
     
@@ -130,14 +133,14 @@ function createBoard(){
         digitalBoard[i] = new Array(tileCount);
         for(let j = 0; j < tileCount; ++j){
             digitalBoard[i][j] = {
-                x: tileCount - 1 - i,
-                y: tileCount - 1 - j
+                x: i,
+                y: j
             };
         }
     }
 
-    emptyTile.x = digitalBoard[tileCount - 1][tileCount - 1].x;
-    emptyTile.y = digitalBoard[tileCount - 1][tileCount - 1].y;
+    emptyTile.x = tileCount - 1;
+    emptyTile.y = tileCount - 1;
     solved = false;
 }
 
@@ -154,12 +157,57 @@ function createDivBoard(){
             tile.style.height = `${100 / tileCount}%`;
 
             //dataset: permite guardar datos personalizados en elementos
-            tile.dataset.x = i;
-            tile.dataset.y = j;
+            tile.dataset.x = j;
+            tile.dataset.y = i;
 
             board.appendChild(tile)
         }
     }
+}
+
+function shuffleBoard(){
+    for(let i = 0; i < 100; i++){
+        const posibleMoves = [];
+
+        // Izquierda
+        if(emptyTile.x > 0){
+            posibleMoves.push({
+                x: emptyTile.x - 1,
+                y: emptyTile.y
+            });
+        }
+
+        // Derecha
+        if(emptyTile.x < tileCount - 1){
+            posibleMoves.push({
+                x: emptyTile.x + 1,
+                y: emptyTile.y
+            });
+        }
+
+        // Arriba
+        if(emptyTile.y > 0){
+            posibleMoves.push({
+                x: emptyTile.x,
+                y: emptyTile.y - 1 // y - 1 sube debido a que es un array, y el 0 esta arriba
+            });
+        }
+
+        // Abajo
+        if(emptyTile.y < tileCount - 1){
+            posibleMoves.push({
+                x: emptyTile.x,
+                y: emptyTile.y + 1
+            });
+        }
+
+
+        const randomIndex = Math.floor(Math.random() * posibleMoves.length);
+        const randomMove = posibleMoves[randomIndex];
+        moveTile(emptyTile, randomMove);
+    }
+    solved = false;
+
 }
 
 
@@ -172,10 +220,11 @@ function canMove (x1, y1, x2, y2){
 
 function moveTile(destination, origin){
     if(!solved) {
-        digitalBoard[destination.x][destination.y].x = digitalBoard [origin.x][origin.y].x;
-        digitalBoard[destination.x][destination.y].y = digitalBoard [origin.x][origin.y].y;
-        digitalBoard[origin.x][origin.y].x = tileCount -1;
-        digitalBoard[origin.x][origin.y].y = tileCount -1;
+        digitalBoard[destination.x][destination.y] = digitalBoard [origin.x][origin.y];
+        digitalBoard[origin.x][origin.y] = {
+            x: tileCount - 1,
+            y: tileCount - 1
+        };
         destination.x = origin.x;
         destination.y = origin.y;
         checkSolved();
@@ -193,5 +242,29 @@ function checkSolved(){
 }
 
 function drawTiles(){
+
+    // busca en el board todos los tiles
+    const tiles = board.querySelectorAll(".tile");
+        tiles.forEach(function(tile){
+            const i =  Number(tile.dataset.x);
+            const j =  Number(tile.dataset.y);
+
+            if (i == emptyTile.x && j == emptyTile.y && !solved){
+                tile.style.backgroundImage = "none";
+                return;
+
+            }
+
+            const x = digitalBoard[i][j].x;
+            const y = digitalBoard[i][j].y;
+
+            tile.style.backgroundImage = `url(${img.src})`;
+
+            //queremos que cada tile tenga la imagen completa, como si fuera el tablero entero, asique multiplicamos el tamaño para conseguirlo
+            tile.style.backgroundSize = `${tileCount * 100}% ${tileCount * 100}%`;
+
+            //movemos la posicion para que cada tile tenga la parte correcta de la imagen
+            tile.style.backgroundPosition = `${x * 100 / (tileCount -1)}% ${y * 100 / (tileCount -1)}%`;
+        });
 
 }

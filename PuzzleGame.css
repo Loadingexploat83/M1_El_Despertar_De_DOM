@@ -109,8 +109,23 @@ p {
 
 #gameboard{
     width: 30%;
-    height: 30%;
+
+/* lo vuelve cuadrado */
+    aspect-ratio: 1/1;
+    margin: auto;
+
+    display: flex;
+    /* flex-wrap: wrap lo que hace es que cuando se llena una fila, pasa a la siguiente */
+    flex-wrap: wrap;
+
     
+}
+
+.tile{
+    /* Border-box añade el borde dentro de la pieza, y asi prevenimos que ocupe un poquito demas las casillas*/
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    border: 1px solid black;
 }
 
 
