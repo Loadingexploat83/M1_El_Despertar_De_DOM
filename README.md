@@ -2,7 +2,16 @@
 Autopsia:
 
 Uso de IA:
-Ninguno hasta el momento.
+    Una vez complete mis primeros envios de la entrega, procedi a usar la IA para corregir y adaptar mi codigo a lo que me pidio el WebI arena.
+    Principalmente lo use para:
+    adaptar el tablero de Canvas a elementos de DOM,
+    revision de logica para que solo se puedan mover las piezas correctas,
+    detectar errores funcionales en mi adaptacion del codigo antiguo como el de createBoard() y drawTiles(),
+    y finalmente para ir a detalle en conceptos de DOM, tales como el ClassList.
+
+    Prompts principales:
+        como hacemos drawTiles()?
+        como hago para que cuando se cree el tablero, haga 50 movimientos legales aleatorios?
 
 
 Bibliografia:
