@@ -17,7 +17,7 @@
     <main>
 
         <div id = "menu">
-            <img id = "catDifficulty" src="img/difficulty/cat_2.png" alt="Cat_Difficulty">
+            <img id = "catDifficulty" src="img/Difficulty/cat_2.png" alt="Cat_Difficulty">
             <div class = "slideContainer">  
                 <input type="range" min = "2" max = "5" value = "2" id = "myRange" class = "slider"> 
                 <p> Board size: <span id="value">  </span></p> <!-- Span: un div pero inline, en vez de block-level element-->
@@ -28,7 +28,12 @@
             </div>  
         </div>
 
-        <div id = "GameMode">
+        <div id = "GameMode" class = "hidden">
+            <div id = "gameInfo"> 
+                <p> Moves: <span id="moves"> 0 </span> </p>
+                <p> Time: <span id="time"> 0 </span> </p>
+
+
             <div id ="gameboard"></div>
             <button id ="returnButton"> Volver al menu </button>
         </div>

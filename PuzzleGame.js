@@ -1,30 +1,46 @@
 
 const board = document.querySelector("#gameboard");
-
-
 const slider = document.querySelector("#myRange");
 const outputTxt = document.querySelector("#value");
 const catDifficulty = document.querySelector("#catDifficulty");
-const catList = { 
-    Onyx: "img/cats/Onyx",
-    Kira: "img/cats/Kira",
-    Patchi: "img/cats/Patchi",
-    Mauricio: "img/cats/Mauricio"
-}
 
-document.querySelector("#startButton").addEventListener('click', startGame);
+const menu = document.querySelector("#menu");
+const gameMode = document.querySelector("#GameMode");
 
-document.querySelector("#returnButton").addEventListener('click', function() {
-    document.querySelector("#menu").style.display = "flex";
-    document.querySelector("#GameMode").style.display = "none";
-});
+const startButton = document.querySelector("#startButton");
+const returnButton = document.querySelector("#returnButton");
 
+const movesCounter = document.querySelector("#moves");
+const timeCounter = document.querySelector("#time");
+
+const catList = [
+    "img/cats/Kira_1.jpg",
+    "img/cats/Mauricio_1.jpg",
+    "img/cats/Mauricio_2.jpg",
+    "img/cats/Onyx_1.jpg",
+    "img/cats/Onyx_2.jpg",
+    "img/cats/Onyx_3.jpg",
+    "img/cats/Onyx_4.jpg",
+    "img/cats/Patchi_1.jpg",
+    "img/cats/Patchi_2.jpg",
+    "img/cats/Patchi_3.jpg",
+    "img/cats/Patchi_4.jpg",
+]
+
+    
 // el tamanio y numero de tiles
 let boardSize = 0;
 let tileSize = 0;
 
 let tileCount = Number(slider.value);
+
 let solved = false;
+let moves = 0;
+
+let timer = 0;
+let timerInterval = null;
+let timerStarted = false;
+
 
 //Donde esta la tile vacia
 const emptyTile = {
@@ -32,75 +48,51 @@ const emptyTile = {
     y: 0
 };
 
-
 let digitalBoard = {};
-
 const img = new Image();
+
+
+startButton.addEventListener('click', startGame);
+
+returnButton.addEventListener('click', function() {
+    menu.classList.remove("hidden");
+    gameMode.classList.add("hidden");
+    board.textContent = "";
+    solved = false;
+});
+
 
 // Espera a que se cargue la imagen antes de continuar con el codigo
 // Si el codigo intenta dibujar los tiles sin que cargue la imagen daria problemas
 img.addEventListener("load", drawTiles);
 
-outputTxt.textContent = `${slider.value} x ${slider.value}`;
+
+board.addEventListener('click', handleBoardClick)
+
+// funcion que usaremos para activar el modo oscuro
+document.addEventListener('keydown', handleKeyPress);
+
+
 slider.addEventListener( "input", function() {
     outputTxt.textContent = `${this.value} x ${this.value}`;
 
     
     //cuando cambiamos la barra de dificultad hay que calcular todo el tablero otra vez
     tileCount = Number(this.value);
-    tileSize = boardSize / tileCount;
 
     changeSliderColor();
     setCatDifficultyImg();
 });
 
 
-function startGame() {
-    document.querySelector("#menu").style.display = "none";
-    document.querySelector("#GameMode").style.display = "flex";
-
-    img.src = getRandomImg();
-    boardSize = board.clientWidth;
-    tileSize = boardSize / tileCount;
-
-    createBoard();
-    shuffleBoard();
-    createDivBoard();
-    drawTiles();
-    
-}
-
-
-
-function handleBoardClick(event){
-    // donde clickeas en el tablero
-    const rect =  board.getBoundingClientRect();
-
-    // event.clientX es donde clickeas segun el navegador
-    // Rect.left es donde empieza el tablero
-    const x = Math.floor((event.clientX - rect.left) / tileSize);
-    const y = Math.floor((event.clientY - rect.top) / tileSize);
-
-    if(canMove(x, y, emptyTile.x, emptyTile.y)){
-        moveTile(emptyTile, {x, y});
-        drawTiles();
-    }   
-
-    if(solved){
-        // Hacemos esperar un poco antes de poner el print de victoria
-        // ya que sino quizas lo hace antes de que se actualice visualmente el tablero
-        setTimeout(function () {alert("Yippie");}, 250);
-    }
-}
-
-board.addEventListener('click', handleBoardClick)
+outputTxt.textContent = `${slider.value} x ${slider.value}`;
 
 
 // funciones del menu:
 function changeSliderColor() {
     let value = ((slider.value - slider.min) / (slider.max - slider.min) * 100 );
-    let color = 'linear-gradient(90deg, rgb(117, 252, 117)' + value + '%, rgb(214, 214, 214)' + value + '%)';
-    slider.style.background = color;
+
+    slider.style.background = 'linear-gradient(90deg, rgb(117, 252, 117)' + value + '%, rgb(214, 214, 214)' + value + '%)';
 }
 
 function setCatDifficultyImg() {
@@ -108,18 +100,37 @@ function setCatDifficultyImg() {
 
 }
 
+function startGame() {
+    menu.classList.add("hidden");
+    gameMode.classList.remove("hidden");
+
+    moves = 0;
+    movesCounter.textContent = moves;
+
+    stopTimer();
+    timer = 0;
+    timerStarted = false;
+    timeCounter.textContent = "0:00";
+
+    solved = false;
+
+    img.src = getRandomImg();
+
+    boardSize = board.clientWidth;
+    tileSize = boardSize / tileCount;
+
+    createBoard();
+    shuffleBoard();
+    createDivBoard();
+    
+}
+
 
 // Funciones del juego:
 function getRandomImg(){
-    const cats = [
-        "img/cats/Onyx_1.jpg",
-        "img/cats/Kira_1.jpg",
-        "img/cats/Patchi_1.jpg",
-        "img/cats/Mauricio_1.jpg"
-    ];
 
-    const randomIndex = Math.floor(Math.random() * cats.length);
-    return cats[randomIndex];
+    const randomIndex = Math.floor(Math.random() * catList.length);
+    return catList[randomIndex];
 }
 
 
@@ -164,44 +175,33 @@ function createDivBoard(){
 }
 
 function shuffleBoard(){
+
+    const directions = [
+        [-1, 0], // izquierda
+        [1, 0],  // derecha
+        [0, -1], // arriba
+        [0, 1]   // abajo
+    ];
+
     for(let i = 0; i < 100; i++){
-        const possibleMoves = [];
 
-        // Izquierda
-        if(emptyTile.x > 0){
-            possibleMoves.push({
-                x: emptyTile.x - 1,
-                y: emptyTile.y
-            });
-        }
+        const validMoves = directions.map(function(direction){
+            return {
+                x: emptyTile.x + direction[0],
+                y: emptyTile.y + direction[1]
+            };
 
-        // Derecha
-        if(emptyTile.x < tileCount - 1){
-            possibleMoves.push({
-                x: emptyTile.x + 1,
-                y: emptyTile.y
-            });
-        }
+        }).filter(function(position){
+            return (
+                position.x >= 0 && position.x < tileCount &&
+                position.y >= 0 && position.y < tileCount
 
-        // Arriba
-        if(emptyTile.y > 0){
-            possibleMoves.push({
-                x: emptyTile.x,
-                y: emptyTile.y - 1 // y - 1 sube debido a que es un array, y el 0 esta arriba
-            });
-        }
+            );
 
-        // Abajo
-        if(emptyTile.y < tileCount - 1){
-            possibleMoves.push({
-                x: emptyTile.x,
-                y: emptyTile.y + 1
-            });
-        }
+        });
 
-
-        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-        const randomMove = possibleMoves[randomIndex];
+        const randomIndex = Math.floor(Math.random() * validMoves.length);
+        const randomMove = validMoves[randomIndex];
 
         // no podemos llamar a moveTile, porque si checkSolves se llama, el tablero se queda resuelto
         digitalBoard[emptyTile.x][emptyTile.y] = digitalBoard[randomMove.x][randomMove.y];
@@ -216,32 +216,97 @@ function shuffleBoard(){
 
 }
 
+function startTimer() {
+    if (timerStarted) return; // Evita iniciar el temporizador si ya está en marcha
+    timerStarted = true;
+    timer = 0;
+    
+    timerInterval = setInterval(function() {
+        timer++;
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+        timeCounter.textContent = 
+        //padStart: hace que el string sea de 2 digitos
+        `${minutes}:${seconds.toString().padStart(2,"0")}`
+    }, 1000);
+}
+
+function stopTimer(){
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+function handleBoardClick(event){
+
+
+    if (!event.target.classList.contains("tile")) {
+        return;
+    }
+
+    const x = Number(event.target.dataset.x);
+    const y = Number(event.target.dataset.y);
+
+    if(canMove(x, y, emptyTile.x, emptyTile.y)){
+        startTimer();
+        moveTile(emptyTile, {x: x, y: y});
+        moves++;
+        movesCounter.textContent = moves;
+
+        if(solved){
+            stopTimer();
+            // Hacemos esperar un poco antes de poner el print de victoria
+            // ya que sino quizas lo hace antes de que se actualice visualmente el tablero
+            setTimeout(function () {alert(`Yippie, lo resolviste en ${moves} movimientos y ${timer} segundos`);}, 250);
+        }
+    }   
+
+
+}
+
+
+function handleKeyPress(event) {
+    if (event.key.toLowerCase() === 'd') {
+        document.body.classList.toggle('dark-mode');
+    }
+}
 
 
 // calcula la distancia entre X e Y
 // Si la distancia es 1, devuelve "True", sino devuelve "False"
 function canMove (x1, y1, x2, y2){
-    return Math.abs(x1- x2) + Math.abs (y1 - y2) == 1;
+    return Math.abs(x1- x2) + Math.abs (y1 - y2) === 1;
 }
 
 function moveTile(destination, origin){
-    if(!solved) {
-        digitalBoard[destination.x][destination.y] = digitalBoard [origin.x][origin.y];
-        digitalBoard[origin.x][origin.y] = {
-            x: tileCount - 1,
-            y: tileCount - 1
-        };
-        destination.x = origin.x;
-        destination.y = origin.y;
-        checkSolved();
-    }
+    if(solved) 
+        return;
+    
+    const emptyPosition = {
+        x: emptyTile.x,
+        y: emptyTile.y
+    };
+
+    //movemos la pieza al hueco
+    digitalBoard[destination.x][destination.y] = digitalBoard [origin.x][origin.y];
+
+    // creamos una nueva casilla vacia en la posicion de la pieza que hemos movido
+    digitalBoard[origin.x][origin.y] = {
+        x: tileCount - 1,
+        y: tileCount - 1
+    };
+    destination.x = origin.x;
+    destination.y = origin.y;
+    checkSolved();
+
+    drawTile(emptyPosition.x, emptyPosition.y);
+    drawTile(destination.x, destination.y);
 }
 
 function checkSolved(){
     let correct = true;
     for(let i = 0; i < tileCount; i++)
         for(let j = 0; j < tileCount; j++)
-            if(digitalBoard[i][j].x != i || digitalBoard [i][j].y != j)
+            if(digitalBoard[i][j].x !== i || digitalBoard [i][j].y !== j)
                 correct = false;
         
     solved = correct;
@@ -251,26 +316,40 @@ function drawTiles(){
 
     // busca en el board todos los tiles
     const tiles = board.querySelectorAll(".tile");
-        tiles.forEach(function(tile){
-            const i =  Number(tile.dataset.x);
-            const j =  Number(tile.dataset.y);
 
-            if (i == emptyTile.x && j == emptyTile.y && !solved){
-                tile.style.backgroundImage = "none";
-                return;
+    tiles.forEach(function(tile){
+        const x = Number(tile.dataset.x);
+        const y = Number(tile.dataset.y);
 
-            }
+        drawTile(x, y);
+    });
+    
 
-            const x = digitalBoard[i][j].x;
-            const y = digitalBoard[i][j].y;
+}
 
-            tile.style.backgroundImage = `url(${img.src})`;
+function drawTile(x, y){
+    const tile = board.querySelector(
+        `.tile[data-x="${x}"][data-y="${y}"]`
+    );
 
-            //queremos que cada tile tenga la imagen completa, como si fuera el tablero entero, asique multiplicamos el tamaño para conseguirlo
-            tile.style.backgroundSize = `${tileCount * 100}% ${tileCount * 100}%`;
+    if(!tile) return;
 
-            //movemos la posicion para que cada tile tenga la parte correcta de la imagen
-            tile.style.backgroundPosition = `${x * 100 / (tileCount -1)}% ${y * 100 / (tileCount -1)}%`;
-        });
+    // si es la tile vacia, no le ponemos imagen
+    if(x === emptyTile.x && y === emptyTile.y && !solved){
+        tile.style.backgroundImage = "none";
+        return;
+    }
+
+    const tileX = digitalBoard[x][y].x;
+    const tileY = digitalBoard[x][y].y;
+
+    //cogemos la imagen
+    tile.style.backgroundImage = `url(${img.src})`;
+    //queremos que cada tile tenga la imagen completa, como si fuera el tablero entero, asique multiplicamos el tamaño para conseguirlo
+    tile.style.backgroundSize = `${tileCount * 100}% ${tileCount * 100}%`;
+    
+    //movemos la posicion para que cada tile tenga la parte correcta de la imagen
+    tile.style.backgroundPosition = `${tileX * 100 / (tileCount -1)}%` 
+                                    + `${tileY * 100 / (tileCount -1)}%`;
 
 }
