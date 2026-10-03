@@ -96,7 +96,7 @@ function changeSliderColor() {
 }
 
 function setCatDifficultyImg() {
-    catDifficulty.src = `img/difficulty/cat_${slider.value}.png`;
+    catDifficulty.src = `img/Difficulty/cat_${slider.value}.png`;
 
 }
 
