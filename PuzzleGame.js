@@ -247,6 +247,9 @@ function handleBoardClick(event){
     const y = Number(event.target.dataset.y);
 
     if(canMove(x, y, emptyTile.x, emptyTile.y)){
+        if(solved)
+            return;
+        
         startTimer();
         moveTile(emptyTile, {x: x, y: y});
         moves++;
