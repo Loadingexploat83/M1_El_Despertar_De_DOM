@@ -4,8 +4,7 @@ const board = document.querySelector("#gameboard");
 
 const slider = document.querySelector("#myRange");
 const outputTxt = document.querySelector("#value");
-const catDificulty = document.querySelector("#catDifficulty");
-const startButton = document.querySelector("#startButton");
+const catDifficulty = document.querySelector("#catDifficulty");
 const catList = { 
     Onyx: "img/cats/Onyx",
     Kira: "img/cats/Kira",
@@ -13,7 +12,12 @@ const catList = {
     Mauricio: "img/cats/Mauricio"
 }
 
-startButton.addEventListener('click', startGame);
+document.querySelector("#startButton").addEventListener('click', startGame);
+
+document.querySelector("#returnButton").addEventListener('click', function() {
+    document.querySelector("#menu").style.display = "flex";
+    document.querySelector("#GameMode").style.display = "none";
+});
 
 // el tamanio y numero de tiles
 let boardSize = 0;
@@ -48,13 +52,23 @@ slider.addEventListener( "input", function() {
 
     changeSliderColor();
     setCatDifficultyImg();
+});
+
+
+function startGame() {
+    document.querySelector("#menu").style.display = "none";
+    document.querySelector("#GameMode").style.display = "flex";
+
+    img.src = getRandomImg();
+    boardSize = board.clientWidth;
+    tileSize = boardSize / tileCount;
 
     createBoard();
     shuffleBoard();
-
     createDivBoard();
     drawTiles();
-});
+    
+}
 
 
 
@@ -79,7 +93,7 @@ function handleBoardClick(event){
     }
 }
 
-board.addEventListener('click', handleBoardClick);
+board.addEventListener('click', handleBoardClick)
 
 
 // funciones del menu:
@@ -90,25 +104,9 @@ function changeSliderColor() {
 }
 
 function setCatDifficultyImg() {
-    catDificulty.src = `img/difficulty/cat_${slider.value}.png`;
+    catDifficulty.src = `img/difficulty/cat_${slider.value}.png`;
 
 }
-
-function startGame() {
-    document.querySelector("menu").style.display = "none";
-    document.querySelector("#GameMode").style.display = "flex";
-
-    img.src = getRandomImg();
-    boardSize = board.clientWidth;
-    tileSize = boardSize / tileCount;
-
-    createBoard();
-    shuffleBoard();
-    createDivBoard();
-    drawTiles();
-    
-}
-
 
 
 // Funciones del juego:
@@ -167,11 +165,11 @@ function createDivBoard(){
 
 function shuffleBoard(){
     for(let i = 0; i < 100; i++){
-        const posibleMoves = [];
+        const possibleMoves = [];
 
         // Izquierda
         if(emptyTile.x > 0){
-            posibleMoves.push({
+            possibleMoves.push({
                 x: emptyTile.x - 1,
                 y: emptyTile.y
             });
@@ -179,7 +177,7 @@ function shuffleBoard(){
 
         // Derecha
         if(emptyTile.x < tileCount - 1){
-            posibleMoves.push({
+            possibleMoves.push({
                 x: emptyTile.x + 1,
                 y: emptyTile.y
             });
@@ -187,7 +185,7 @@ function shuffleBoard(){
 
         // Arriba
         if(emptyTile.y > 0){
-            posibleMoves.push({
+            possibleMoves.push({
                 x: emptyTile.x,
                 y: emptyTile.y - 1 // y - 1 sube debido a que es un array, y el 0 esta arriba
             });
@@ -195,15 +193,15 @@ function shuffleBoard(){
 
         // Abajo
         if(emptyTile.y < tileCount - 1){
-            posibleMoves.push({
+            possibleMoves.push({
                 x: emptyTile.x,
                 y: emptyTile.y + 1
             });
         }
 
 
-        const randomIndex = Math.floor(Math.random() * posibleMoves.length);
-        const randomMove = posibleMoves[randomIndex];
+        const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+        const randomMove = possibleMoves[randomIndex];
 
         // no podemos llamar a moveTile, porque si checkSolves se llama, el tablero se queda resuelto
         digitalBoard[emptyTile.x][emptyTile.y] = digitalBoard[randomMove.x][randomMove.y];

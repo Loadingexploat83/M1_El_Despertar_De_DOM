@@ -16,8 +16,8 @@
     <header> Build-a-Cat </header>
     <main>
 
-        <menu id = "menu">
-            <img id = "catDifficulty" src="img/Difficulty/cat_2.png" alt="Cat_Difficulty">
+        <div id = "menu">
+            <img id = "catDifficulty" src="img/difficulty/cat_2.png" alt="Cat_Difficulty">
             <div class = "slideContainer">  
                 <input type="range" min = "2" max = "5" value = "2" id = "myRange" class = "slider"> 
                 <p> Board size: <span id="value">  </span></p> <!-- Span: un div pero inline, en vez de block-level element-->
@@ -26,10 +26,11 @@
             <div id = "Buttons"> 
                 <button id="startButton">Start Game</button>
             </div>  
-        </menu>
+        </div>
 
         <div id = "GameMode">
             <div id ="gameboard"></div>
+            <button id ="returnButton"> Volver al menu </button>
         </div>
     </main>
 

@@ -12,7 +12,7 @@ header{
     text-align: center;
     font-size: 1.5em;
     padding: .5em;
-    margin: 0% 43% 2%;
+    margin: 1% 40% 2% 40%;
 }
 
 
@@ -37,7 +37,7 @@ button{
     text-align: center;
     font-size: 2em;
     padding: 1em;
-    margin: 2% 40%;
+    margin: auto;
 
 }
 
@@ -54,7 +54,8 @@ button{
     border-radius: 3em;
     color: white;
     background-color: #313537;
-    margin: 0% 35% 2%;
+    margin: auto;
+    margin-bottom: 1em;
 
     width: 20%;
     height: 20%;   
@@ -66,7 +67,8 @@ button{
 
 .slideContainer{
     width: 20%;
-    margin: 0% 40% 3%;
+    margin: auto;
+    margin-bottom: 4em;
     height: 2em;
 }
 
@@ -105,6 +107,13 @@ p {
 #GameMode{
     display: none;
     justify-content: space-around;
+    flex-direction: column;
+
+}
+
+#menu{
+    display: flex;
+    flex-direction: column;
 }
 
 #gameboard{
@@ -113,12 +122,21 @@ p {
 /* lo vuelve cuadrado */
     aspect-ratio: 1/1;
     margin: auto;
+    margin-bottom: 1em;
 
     display: flex;
     /* flex-wrap: wrap lo que hace es que cuando se llena una fila, pasa a la siguiente */
     flex-wrap: wrap;
 
     
+}
+
+#returnButton{
+    display: block;
+
+    font-size: 2em;
+    padding: 1em;
+    margin: auto;
 }
 
 .tile{
