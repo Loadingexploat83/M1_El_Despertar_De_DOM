@@ -238,6 +238,9 @@ function stopTimer(){
 
 function handleBoardClick(event){
 
+    //si ya has completado el puzle, que no pase nada si le das click otra vez al tablero
+    if(solved)
+        return;
 
     if (!event.target.classList.contains("tile")) {
         return;
@@ -247,9 +250,9 @@ function handleBoardClick(event){
     const y = Number(event.target.dataset.y);
 
     if(canMove(x, y, emptyTile.x, emptyTile.y)){
-        if(solved)
-            return;
-        
+
+
+
         startTimer();
         moveTile(emptyTile, {x: x, y: y});
         moves++;
