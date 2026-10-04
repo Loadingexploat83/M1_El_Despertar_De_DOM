@@ -105,6 +105,7 @@ function setCatDifficultyImg() {
 function startGame() {
     menu.classList.add("hidden");
     gameMode.classList.remove("hidden");
+    victoryMessage.classList.add("hidden");
 
     moves = 0;
     movesCounter.textContent = moves;
