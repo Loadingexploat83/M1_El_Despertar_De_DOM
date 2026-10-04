@@ -2,7 +2,7 @@
 Misión M1 · El Despertar del DOM — Web Development I.
 
 ## Cómo probarlo
-Abre index.html en el navegador (o con Live Server). Usa el slider para crear el tamaño del tablero deseado y dale a "Start Game":
+Abre PuzzleGame.html en el navegador (o con Live Server). Usa el slider para crear el tamaño del tablero deseado y dale a "Start Game":
     Al iniciar veras una imagen desordenadada en tiles, debes usar el espacio vacio para ordenar todos los tiles y restaurar la imagen.
 
 ## Uso de IA

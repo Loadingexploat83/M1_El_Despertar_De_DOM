@@ -28,10 +28,6 @@ const catList = [
 ]
 
     
-// el tamanio y numero de tiles
-let boardSize = 0;
-let tileSize = 0;
-
 let tileCount = Number(slider.value);
 
 let solved = false;
@@ -55,9 +51,11 @@ const img = new Image();
 startButton.addEventListener('click', startGame);
 
 returnButton.addEventListener('click', function() {
+    stopTimer();
     menu.classList.remove("hidden");
     gameMode.classList.add("hidden");
     board.textContent = "";
+    //board.replaceChildren();
     solved = false;
 });
 
@@ -92,7 +90,7 @@ outputTxt.textContent = `${slider.value} x ${slider.value}`;
 function changeSliderColor() {
     let value = ((slider.value - slider.min) / (slider.max - slider.min) * 100 );
 
-    slider.style.background = 'linear-gradient(90deg, rgb(117, 252, 117)' + value + '%, rgb(214, 214, 214)' + value + '%)';
+    slider.style.background = `linear-gradient(90deg, rgb(117, 252, 117)${value}%, rgb(214, 214, 214) ${value}%)`;
 }
 
 function setCatDifficultyImg() {
@@ -116,8 +114,6 @@ function startGame() {
 
     img.src = getRandomImg();
 
-    boardSize = board.clientWidth;
-    tileSize = boardSize / tileCount;
 
     createBoard();
     shuffleBoard();
