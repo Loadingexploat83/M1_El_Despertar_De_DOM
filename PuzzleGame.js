@@ -45,19 +45,15 @@ const emptyTile = {
 };
 
 let digitalBoard = {};
+
+// tileElements [x][y]: donde esta la tile visual
+let tileElements= [];
 const img = new Image();
 
 
 startButton.addEventListener('click', startGame);
 
-returnButton.addEventListener('click', function() {
-    stopTimer();
-    menu.classList.remove("hidden");
-    gameMode.classList.add("hidden");
-    board.textContent = "";
-    //board.replaceChildren();
-    solved = false;
-});
+returnButton.addEventListener('click', returnToMenu);
 
 
 // Espera a que se cargue la imagen antes de continuar con el codigo
@@ -72,23 +68,23 @@ document.addEventListener('keydown', handleKeyPress);
 
 
 slider.addEventListener( "input", function() {
-    outputTxt.textContent = `${this.value} x ${this.value}`;
-
-    
     //cuando cambiamos la barra de dificultad hay que calcular todo el tablero otra vez
     tileCount = Number(this.value);
+    
+    outputTxt.textContent = `${this.value} x ${this.value}`;
 
     changeSliderColor();
     setCatDifficultyImg();
 });
 
-
+// inicializamos el menu:
 outputTxt.textContent = `${slider.value} x ${slider.value}`;
+changeSliderColor();
 
 
 // funciones del menu:
 function changeSliderColor() {
-    let value = ((slider.value - slider.min) / (slider.max - slider.min) * 100 );
+    const value = ((slider.value - slider.min) / (slider.max - slider.min) * 100 );
 
     slider.style.background = `linear-gradient(90deg, rgb(117, 252, 117)${value}%, rgb(214, 214, 214) ${value}%)`;
 }
@@ -114,10 +110,10 @@ function startGame() {
 
     img.src = getRandomImg();
 
-
     createBoard();
-    shuffleBoard();
     createDivBoard();
+
+    shuffleBoard();
     
 }
 
@@ -134,12 +130,12 @@ function getRandomImg(){
 function createBoard(){
 
     digitalBoard = new Array(tileCount);
-    for(let i = 0; i < tileCount; ++i){
-        digitalBoard[i] = new Array(tileCount);
-        for(let j = 0; j < tileCount; ++j){
-            digitalBoard[i][j] = {
-                x: i,
-                y: j
+    for(let x = 0; x < tileCount; ++x){
+        digitalBoard[x] = new Array(tileCount);
+        for(let y = 0; y < tileCount; ++y){
+            digitalBoard[x][y] = {
+                x: x,
+                y: y
             };
         }
     }
@@ -152,8 +148,16 @@ function createBoard(){
 
 function createDivBoard(){
     board.textContent = "";
-    for(let i = 0; i < tileCount; i++){
-        for(let j = 0; j < tileCount; j++){
+
+    tileElements = new Array(tileCount);
+
+    for(let x = 0; x < tileCount; x++){
+        tileElements[x] = new Array(tileCount);
+
+    }
+
+    for(let y = 0; y < tileCount; y++){
+        for(let x = 0; x < tileCount; x++){
             const tile = document.createElement("div");
             tile.classList.add("tile");
 
@@ -162,26 +166,19 @@ function createDivBoard(){
             tile.style.height = `${100 / tileCount}%`;
 
             //dataset: permite guardar datos personalizados en elementos
-            tile.dataset.x = j;
-            tile.dataset.y = i;
+            tile.dataset.x = x;
+            tile.dataset.y = y;
 
             board.appendChild(tile)
+
+            //guardamos referencia para no hacer querySelector:
+            tileElements[x][y] = tile;
         }
     }
 }
 
-function shuffleBoard(){
-
-    const directions = [
-        [-1, 0], // izquierda
-        [1, 0],  // derecha
-        [0, -1], // arriba
-        [0, 1]   // abajo
-    ];
-
-    for(let i = 0; i < 100; i++){
-
-        const validMoves = directions.map(function(direction){
+function moveRandom(directions){
+    const validMoves = directions.map(function(direction){
             return {
                 x: emptyTile.x + direction[0],
                 y: emptyTile.y + direction[1]
@@ -207,10 +204,39 @@ function shuffleBoard(){
         };
         emptyTile.x = randomMove.x;
         emptyTile.y = randomMove.y;
+        
+
+}
+
+function shuffleBoard(){
+
+    const directions = [
+        [-1, 0], // izquierda
+        [1, 0],  // derecha
+        [0, -1], // arriba
+        [0, 1]   // abajo
+    ];
+
+    for(let i = 0; i < 100; i++){
+        moveRandom(directions)
+    }
+    if(checkSolved()){
+        moveRandom(directions)
     }
     solved = false;
 
 }
+
+function returnToMenu() {
+    stopTimer();
+    menu.classList.remove("hidden");
+    gameMode.classList.add("hidden");
+    board.textContent = "";
+    //board.replaceChildren();
+    solved = false;
+    moves = 0;
+    timer = 0;
+};
 
 function startTimer() {
     if (timerStarted) return; // Evita iniciar el temporizador si ya está en marcha
@@ -230,6 +256,7 @@ function startTimer() {
 function stopTimer(){
     clearInterval(timerInterval);
     timerInterval = null;
+    timerStarted = false;
 }
 
 function handleBoardClick(event){
@@ -250,7 +277,7 @@ function handleBoardClick(event){
 
 
         startTimer();
-        moveTile(emptyTile, {x: x, y: y});
+        moveTile(x, y);
         moves++;
         movesCounter.textContent = moves;
 
@@ -269,6 +296,53 @@ function handleBoardClick(event){
 function handleKeyPress(event) {
     if (event.key.toLowerCase() === 'd') {
         document.body.classList.toggle('dark-mode');
+        return;
+    }
+
+    // si solucionamos el puzle, que no puedas mover las piezas
+    if(gameMode.classList.contains("hidden") || solved)
+        return;
+    
+    let destinationX = emptyTile.x;
+    let destinationY = emptyTile.y;
+
+    switch(event.key){
+        case "ArrowLeft":
+            destinationX++;
+            break;
+        
+        case "ArrowRight":
+            destinationX--;
+            break;
+        
+        case "ArrowUp":
+            destinationY++;
+            break;
+        
+        case "ArrowDown":
+            destinationY--;
+            break;
+        default: 
+            return;
+
+    }
+
+    // esto hace que no puedas scrollear la pagina web con las flechas
+    event.preventDefault();
+
+    if(destinationX >= 0 && destinationX < tileCount &&
+        destinationY >= 0 && destinationY < tileCount
+    ){
+        startTimer();
+
+        moveTile(destinationX, destinationY);
+        moves++;
+        movesCounter.textContent = moves;
+
+        if(solved){
+            stopTimer();
+            setTimeout(function () {alert(`Yippie, lo resolviste en ${moves} movimientos y ${timer} segundos`);}, 250);
+        }
     }
 }
 
@@ -279,7 +353,7 @@ function canMove (x1, y1, x2, y2){
     return Math.abs(x1- x2) + Math.abs (y1 - y2) === 1;
 }
 
-function moveTile(destination, origin){
+function moveTile(x, y){
     if(solved) 
         return;
     
@@ -289,26 +363,26 @@ function moveTile(destination, origin){
     };
 
     //movemos la pieza al hueco
-    digitalBoard[destination.x][destination.y] = digitalBoard [origin.x][origin.y];
+    digitalBoard[emptyTile.x][emptyTile.y] = digitalBoard [x][y];
 
     // creamos una nueva casilla vacia en la posicion de la pieza que hemos movido
-    digitalBoard[origin.x][origin.y] = {
+    digitalBoard[x][y] = {
         x: tileCount - 1,
         y: tileCount - 1
     };
-    destination.x = origin.x;
-    destination.y = origin.y;
+    emptyTile.x = x;
+    emptyTile.y = y;
     checkSolved();
 
     drawTile(emptyPosition.x, emptyPosition.y);
-    drawTile(destination.x, destination.y);
+    drawTile(x, y);
 }
 
 function checkSolved(){
     let correct = true;
-    for(let i = 0; i < tileCount; i++)
-        for(let j = 0; j < tileCount; j++)
-            if(digitalBoard[i][j].x !== i || digitalBoard [i][j].y !== j)
+    for(let x = 0; x < tileCount; x++)
+        for(let y = 0; y < tileCount; y++)  
+            if(digitalBoard[x][y].x !== x || digitalBoard [x][y].y !== y)
                 correct = false;
         
     solved = correct;
@@ -316,23 +390,17 @@ function checkSolved(){
 
 function drawTiles(){
 
-    // busca en el board todos los tiles
-    const tiles = board.querySelectorAll(".tile");
-
-    tiles.forEach(function(tile){
-        const x = Number(tile.dataset.x);
-        const y = Number(tile.dataset.y);
-
-        drawTile(x, y);
-    });
+    for(let y = 0; y < tileCount; y++){
+        for(let x = 0; x < tileCount; x++){
+            drawTile(x,y)
+        }
+    }
     
 
 }
 
 function drawTile(x, y){
-    const tile = board.querySelector(
-        `.tile[data-x="${x}"][data-y="${y}"]`
-    );
+    const tile = tileElements[x][y];
 
     if(!tile) return;
 
@@ -349,9 +417,10 @@ function drawTile(x, y){
     tile.style.backgroundImage = `url(${img.src})`;
     //queremos que cada tile tenga la imagen completa, como si fuera el tablero entero, asique multiplicamos el tamaño para conseguirlo
     tile.style.backgroundSize = `${tileCount * 100}% ${tileCount * 100}%`;
+    const backgroundX = tileX * 100 / (tileCount - 1)
+    const backgroundY = tileY * 100 / (tileCount - 1)
     
     //movemos la posicion para que cada tile tenga la parte correcta de la imagen
-    tile.style.backgroundPosition = `${tileX * 100 / (tileCount -1)}%` 
-                                    + `${tileY * 100 / (tileCount -1)}%`;
+    tile.style.backgroundPosition = `${backgroundX}% ${backgroundY}%`;
 
 }
