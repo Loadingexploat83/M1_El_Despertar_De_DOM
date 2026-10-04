@@ -1,0 +1,230 @@
+
+header{
+
+    border: .25em solid white;
+    border-radius: 3em;
+    color: white;
+    background-color: #313537;
+
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    font-size: 1.5em;
+    padding: .5em;
+    margin: 1% 40% 2% 40%;
+
+    
+    /* border-color: #8C8273; */
+}
+
+
+
+body{
+    text-align: center;
+    background-color: #4D5356;
+    background-repeat: no-repeat;
+
+    color: #d8d4cf;
+}
+
+
+button{
+    
+    border: .25em solid white;
+    border-radius: 3em;
+
+    color: white;
+    background-color: #313537;
+
+    text-align: center;
+    font-size: 2em;
+    padding: 1em;
+    margin: auto;
+
+    cursor: pointer;
+
+}
+
+button:hover{
+    transform: scale(1.05);
+}
+
+#Buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+}
+
+#catDifficulty{
+    border: .25em solid white;
+    border-radius: 3em;
+    
+    background-color: #313537;
+    
+    margin: auto;
+    margin-bottom: 1em;
+
+    width: 20%;
+    height: 20%;   
+    aspect-ratio: 1/1;
+}
+
+
+
+
+.slideContainer{
+    width: 20%;
+    margin: auto;
+    margin-bottom: 4em;
+    height: 2em;
+}
+
+.slider{
+    appearance: none;
+    -webkit-appearance: none;
+    background: linear-gradient(90deg, rgb(255, 255, 255) 60%, rgb(255, 255, 255) 60%);
+    width: 100%;
+    height: 2em;
+    outline: none;
+    transition: .2s;
+    border-radius: 1em;
+    opacity: 0.7;
+}
+
+.slider:hover{
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 2em;
+    height: 2em;
+    background: black;
+    cursor: pointer;
+    border-radius: 50%;
+
+}
+
+
+p {
+
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#GameMode{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+
+}
+
+.hidden {
+    /* !important: significa que esto tiene prioridad sobre otros estilos */
+    display: none !important;
+}
+
+#menu{
+    display: flex;
+    flex-direction: column;
+}
+
+#gameboard{
+    width: 30%;
+
+/* lo vuelve cuadrado */
+    aspect-ratio: 1/1;
+    margin: auto;
+    margin-bottom: 1em;
+
+    display: flex;
+    /* flex-wrap: wrap lo que hace es que cuando se llena una fila, pasa a la siguiente */
+    flex-wrap: wrap;
+
+    
+}
+
+#returnButton{
+    font-size: 2em;
+    padding: 1em;
+    margin: auto;
+}
+
+.tile{
+    /* Border-box añade el borde dentro de la pieza, y asi prevenimos que ocupe un poquito demas las casillas*/
+    box-sizing: border-box;
+    background-repeat: no-repeat;
+    border: 1px solid black;
+}
+
+
+body.dark-mode{
+    background-color: black;
+    color: white;
+}
+
+body.dark-mode header,
+body.dark-mode button,
+body.dark-mode #catDifficulty{
+    background-color: black;
+    border-color: gray;
+}
+
+body.dark-mode .tile{
+    border-color: gray;
+}
+
+#victoryMessage {
+    margin: 2em auto;
+    padding: 1.5em;
+    border: .25em solid white;
+    border-radius: 2em;
+    background-color: #313537;
+    width: fit-content;
+    animation: victoryAppear .6s ease-out;
+}
+
+#victoryMessage h2 {
+    font-size: 2.5em;
+    margin: .2em;
+}
+
+#victoryMessage p {
+    font-size: 1.3em;
+}
+
+@keyframes victoryAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    70% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tile.victory {
+    animation: tileVictory .5s ease-in-out;
+}
+
+@keyframes tileVictory {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.12) rotate(3deg);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
