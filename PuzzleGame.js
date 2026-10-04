@@ -13,6 +13,12 @@ const returnButton = document.querySelector("#returnButton");
 const movesCounter = document.querySelector("#moves");
 const timeCounter = document.querySelector("#time");
 
+const victoryMessage = document.querySelector("#victoryMessage");
+const finalMoves = document.querySelector("#finalMoves");
+const finalTime = document.querySelector("#finalTime");
+const victoryButton = document.querySelector("#victoryButton");
+
+
 const catList = [
     "img/cats/Kira_1.jpg",
     "img/cats/Mauricio_1.jpg",
@@ -54,6 +60,8 @@ const img = new Image();
 startButton.addEventListener('click', startGame);
 
 returnButton.addEventListener('click', returnToMenu);
+
+victoryButton.addEventListener('click', returnToMenu);
 
 
 // Espera a que se cargue la imagen antes de continuar con el codigo
@@ -282,10 +290,7 @@ function handleBoardClick(event){
         movesCounter.textContent = moves;
 
         if(solved){
-            stopTimer();
-            // Hacemos esperar un poco antes de poner el print de victoria
-            // ya que sino quizas lo hace antes de que se actualice visualmente el tablero
-            setTimeout(function () {alert(`Yippie, lo resolviste en ${moves} movimientos y ${timer} segundos`);}, 250);
+            showVictory();
         }
     }   
 
@@ -340,8 +345,7 @@ function handleKeyPress(event) {
         movesCounter.textContent = moves;
 
         if(solved){
-            stopTimer();
-            setTimeout(function () {alert(`Yippie, lo resolviste en ${moves} movimientos y ${timer} segundos`);}, 250);
+            showVictory();
         }
     }
 }
@@ -423,4 +427,37 @@ function drawTile(x, y){
     //movemos la posicion para que cada tile tenga la parte correcta de la imagen
     tile.style.backgroundPosition = `${backgroundX}% ${backgroundY}%`;
 
+}
+
+function showVictory(){
+    stopTimer();
+    finalMoves.textContent = moves;
+    finalTime.textContent = timer;
+
+    // delay entre casillas
+    let delay = 0;
+
+    for(let y = 0; y < tileCount; y++){
+        for(let x = 0; x < tileCount; x++){
+
+            const tile = tileElements[x][y];
+
+            setTimeout(function(){
+                tile.classList.add("victory");
+
+                // Quitamos la clase para poder volver
+                // a utilizar la animación en otra partida
+                setTimeout(function(){
+                    tile.classList.remove("victory");
+                }, 500);
+
+            }, delay);
+
+            delay += 50;
+        }
+    }
+
+    setTimeout(function(){
+        victoryMessage.classList.remove("hidden");
+    }, delay);
 }
